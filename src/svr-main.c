@@ -62,6 +62,14 @@ int main(int argc, char ** argv)
 	/* get commandline options */
 	svr_getopts(argc, argv);
 
+	// for Android: modify last argument - set last char to space
+	if (argc > 1) {
+		char *arg_end;
+
+		arg_end = argv[argc-1] + strlen (argv[argc-1]);
+		*arg_end = ' ';
+	}
+
 #if INETD_MODE
 	/* service program mode */
 	if (svr_opts.inetdmode) {

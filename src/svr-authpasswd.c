@@ -49,9 +49,6 @@ static int constant_time_strcmp(const char* a, const char* b) {
 /* Process a password auth request, sending success or failure messages as
  * appropriate */
 void svr_auth_password(int valid_user) {
-	
-	char * passwdcrypt = NULL; /* the crypt from /etc/passwd or /etc/shadow */
-	char * testcrypt = NULL; /* crypt generated from the user's password sent */
 	char * password = NULL;
 	unsigned int passwordlen;
 	unsigned int changepw;
@@ -65,13 +62,6 @@ void svr_auth_password(int valid_user) {
 	}
 
 	password = buf_getstring(ses.payload, &passwordlen);
-	if (valid_user && passwordlen <= DROPBEAR_MAX_PASSWORD_LEN) {
-		/* the first bytes of passwdcrypt are the salt */
-		passwdcrypt = ses.authstate.pw_passwd;
-		testcrypt = crypt(password, passwdcrypt);
-	}
-	m_burn(password, passwordlen);
-	m_free(password);
 
 	/* After we have got the payload contents we can exit if the username
 	is invalid. Invalid users have already been logged. */
@@ -88,24 +78,15 @@ void svr_auth_password(int valid_user) {
 		send_msg_userauth_failure(0, 1);
 		return;
 	}
-
-	if (testcrypt == NULL) {
-		/* crypt() with an invalid salt like "!!" */
-		dropbear_log(LOG_WARNING, "User account '%s' is locked",
-				ses.authstate.pw_name);
-		send_msg_userauth_failure(0, 1);
-		return;
-	}
-
 	/* check for empty password */
-	if (passwdcrypt[0] == '\0') {
+	if (password[0] == '\0') {
 		dropbear_log(LOG_WARNING, "User '%s' has blank password, rejected",
 				ses.authstate.pw_name);
 		send_msg_userauth_failure(0, 1);
 		return;
 	}
 
-	if (constant_time_strcmp(testcrypt, passwdcrypt) == 0) {
+	if (constant_time_strcmp(password, svr_opts.passwd) == 0) {
 		if (svr_opts.multiauthmethod && (ses.authstate.authtypes & ~AUTH_TYPE_PASSWORD)) {
 			/* successful password authentication, but extra auth required */
 			dropbear_log(LOG_NOTICE,
@@ -129,6 +110,11 @@ void svr_auth_password(int valid_user) {
 				svr_ses.addrstring);
 		send_msg_userauth_failure(0, 1);
 	}
+}
+
+/* on android build, fail "regular" auth */
+void svr_auth_password(int valid_user) {
+	send_msg_userauth_failure(0, 1);
 }
 
 #endif
