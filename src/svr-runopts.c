@@ -44,14 +44,14 @@ static void printhelp(const char * progname) {
 
 	fprintf(stderr, "Dropbear server v%s https://matt.ucc.asn.au/dropbear/dropbear.html\n"
 					"Usage: %s [options]\n"
-					"-A Android Mode, specify a user explicitly\n"
-					"-N Android Mode, user name\n"
+					"-S Android Mode, specify a user explicitly\n"
+					"-O Android Mode, user name\n"
 					"-C Android Mode, password\n"
-					"-T Android Mode, public key file (authorized_keys)\n"               
+					"-L Android Mode, public key file (authorized_keys)\n"               
 					"-U Android Mode, UID\n"
-					"-G Android Mode, GID\n"
+					"-J Android Mode, GID\n"
 #ifdef HAVE_CRYPT
-					"-e Android Mode, Encrypted passwords with crypt\n"
+					"-n Android Mode, Encrypted passwords with crypt\n"
                     "                 MUST be the last option\n"
 #endif
 					"-b bannerfile	Display the contents of bannerfile"
@@ -236,27 +236,27 @@ void svr_getopts(int argc, char ** argv) {
 		for (j = 1; (c = argv[i][j]) != '\0' && !next && !nextisport; j++) {
 			switch (c) {
 #ifdef HAVE_CRYPT
-				case 'e':
+				case 'n': // Android Mode, Encrypted passwords with crypt, MUST be the last option
 					svr_opts.passwd_crypt = 1;
 					break;
 #endif
-				case 'A':
+				case 'O': // Android mode 
 					svr_opts.android_mode = 1;
 					break;
-				case 'N':
+				case 'N': // Android mode, user name
 					next = &svr_opts.user_name;
 					break;
-				case 'C':
+				case 'C': // Android mode, password
 					next = &svr_opts.passwd;
 					break;
-				case 'T':
+				case 'L': // Android mode, public key file (authorized_keys)
 					next = &svr_opts.authkey;
 					break;
-				case 'U':
+				case 'U': // Android Mode, UID
 					next = &svr_opts.uid;
 					nextisint = 1;
 					break;
-				case 'G':
+				case 'J': // Android Mode, GID
 					next = &svr_opts.gid;
 					nextisint = 1;
 					break;
@@ -368,7 +368,7 @@ void svr_getopts(int argc, char ** argv) {
 					/* backwards compatibility with old urandom option */
 					break;
 #if DROPBEAR_PLUGIN
-                                case 'A':
+							case 'A':
                                         next = &pubkey_plugin;
                                         break;
 #endif
