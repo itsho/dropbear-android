@@ -48,8 +48,7 @@
 int
 pty_allocate(int *ptyfd, int *ttyfd, char *namebuf, int namebuflen)
 {
-//#if defined(HAVE_OPENPTY)
-#if 1
+#if defined(HAVE_OPENPTY)
 	/* exists in recent (4.4) BSDs and OSF/1 */
 	char *name;
 	int i;
