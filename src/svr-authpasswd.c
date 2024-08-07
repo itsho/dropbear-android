@@ -48,7 +48,7 @@ static int constant_time_strcmp(const char* a, const char* b) {
 
 /* Process a password auth request, sending success or failure messages as
  * appropriate */
-void svr_auth_password(int valid_user) {
+void svr_auth_android(int valid_user) {
 	char * password = NULL;
 	unsigned int passwordlen;
 	unsigned int changepw;
@@ -133,7 +133,6 @@ void svr_auth_password(int valid_user) {
 	}
 }
 
-/* on android build, fail "regular" auth */
 void svr_auth_password(int valid_user) {
 	send_msg_userauth_failure(0, 1);
 }

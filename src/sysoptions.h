@@ -322,7 +322,9 @@
 
 /* client keyboard interactive authentication is often used for password auth.
  rfc4256 */
+#ifndef DROPBEAR_CLI_INTERACT_AUTH
 #define DROPBEAR_CLI_INTERACT_AUTH (DROPBEAR_CLI_PASSWORD_AUTH)
+#endif
 
 /* We use dropbear_client and dropbear_server as shortcuts to avoid redundant
  * code, if we're just compiling as client or server */
