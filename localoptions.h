@@ -1,3 +1,9 @@
+
+#define USE_DEV_PTMX 1
+#define DROPBEAR_SVR_PASSWORD_AUTH 0
+#define DO_MOTD 0
+#undef HAVE_CRYPT
+
 #define DISABLE_LASTLOG
 
 #define DROPBEAR_DEFPORT "22"
@@ -6,9 +12,10 @@
 #define DROPBEAR_DEFADDRESS ""
 
 /* Default hostkey paths - these can be specified on the command line */
-#define DSS_PRIV_FILENAME "/data/dropbear/dropbear_dss_host_key"
-#define RSA_PRIV_FILENAME "/data/dropbear/dropbear_rsa_host_key"
-#define ECDSA_PRIV_FILENAME "/data/dropbear/dropbear_ecdsa_host_key"
+#define DSS_PRIV_FILENAME "/data/local/tmp/dropbear_dss_host_key"
+#define RSA_PRIV_FILENAME "/data/local/tmp/dropbear_rsa_host_key"
+#define ECDSA_PRIV_FILENAME "/data/local/tmp/dropbear_ecdsa_host_key"
+#define ED25519_PRIV_FILENAME "/data/local/tmp/dropbear_ed25519_host_key"
 
 /* Set this if you want to use the DROPBEAR_SMALL_CODE option. This can save
 several kB in binary size however will make the symmetrical ciphers and hashes
